@@ -12,4 +12,9 @@ import org.springframework.stereotype.Repository
  */
 @Mapper
 @Repository
-interface BingImageMapper : BaseMapper<BingImage>
+interface BingImageMapper : BaseMapper<BingImage> {
+
+    fun random(): BingImage?
+
+    fun getByDate(year: Int, month: Int, day: Int): BingImage?
+}
