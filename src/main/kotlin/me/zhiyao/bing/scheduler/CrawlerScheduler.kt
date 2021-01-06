@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
 @Component
 class CrawlerScheduler(private val bingCrawler: BingCrawler) {
 
-    @Scheduled(cron = "0 3 0 * * *")
+    @Scheduled(cron = "5 0 0 * * *")
     fun crawler() {
         runBlocking {
             bingCrawler.getHPImageArchive()
