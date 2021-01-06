@@ -16,7 +16,7 @@ import java.time.format.DateTimeParseException
  * @date 2021/1/6
  */
 @RestController
-@RequestMapping("/bing/v1")
+@RequestMapping("/v1")
 class BingController(private val bingImageService: BingImageService) {
 
     @GetMapping("/random")
