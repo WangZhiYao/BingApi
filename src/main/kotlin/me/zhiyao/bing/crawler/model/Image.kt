@@ -1,16 +1,14 @@
 package me.zhiyao.bing.crawler.model
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import com.fasterxml.jackson.annotation.JsonProperty
 
 /**
  *
  * @author WangZhiYao
  * @date 2020/12/23
  */
-@JsonClass(generateAdapter = true)
 data class Image(
-    @Json(name = "enddate")
+    @JsonProperty("enddate")
     val endDate: String?,
     val url: String?,
     val copyright: String?,

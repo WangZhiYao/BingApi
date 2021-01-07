@@ -27,9 +27,12 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 
-    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
 
     implementation(kotlin("reflect"))
     implementation(kotlin("stdlib-jdk8"))
@@ -42,13 +45,6 @@ dependencies {
 
     // OkHttp
     implementation("com.squareup.okhttp3:okhttp")
-
-    // Thumbnailator
-    implementation("net.coobird:thumbnailator:0.4.13")
-
-    // Moshi
-    implementation("com.squareup.moshi:moshi-kotlin:1.11.0")
-    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.11.0")
 }
 
 tasks.withType<KotlinCompile> {

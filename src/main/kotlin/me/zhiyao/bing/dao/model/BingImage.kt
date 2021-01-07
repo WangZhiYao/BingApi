@@ -2,6 +2,7 @@ package me.zhiyao.bing.dao.model
 
 import com.baomidou.mybatisplus.annotation.IdType
 import com.baomidou.mybatisplus.annotation.TableId
+import com.fasterxml.jackson.annotation.JsonIgnore
 
 /**
  *
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.annotation.TableId
  * @date 2020/12/22
  */
 data class BingImage(
+    @JsonIgnore
     @TableId(type = IdType.AUTO)
     var id: Long?,
     val year: Int,

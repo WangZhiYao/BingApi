@@ -2,6 +2,9 @@ package me.zhiyao.bing.scheduler
 
 import kotlinx.coroutines.runBlocking
 import me.zhiyao.bing.crawler.BingCrawler
+import me.zhiyao.bing.repository.BingImageRepository
+import org.springframework.mail.SimpleMailMessage
+import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
@@ -11,12 +14,21 @@ import org.springframework.stereotype.Component
  * @date 2020/12/22
  */
 @Component
-class CrawlerScheduler(private val bingCrawler: BingCrawler) {
+class CrawlerScheduler(
+    private val bingCrawler: BingCrawler,
+    private val bingImageRepository: BingImageRepository,
+    private val mailSender: JavaMailSender,
+    private val message: SimpleMailMessage
+) {
 
     @Scheduled(cron = "5 0 0 * * *")
     fun crawler() {
         runBlocking {
-            bingCrawler.getHPImageArchive()
+            if (!bingCrawler.getHPImageArchive()) {
+                mailSender.send(message)
+            } else {
+                bingImageRepository.flushCache()
+            }
         }
     }
 }

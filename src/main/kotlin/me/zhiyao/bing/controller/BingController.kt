@@ -1,8 +1,11 @@
 package me.zhiyao.bing.controller
 
-import me.zhiyao.bing.constant.Constants
-import me.zhiyao.bing.dao.service.BingImageService
+import me.zhiyao.bing.constant.ResponseCode
+import me.zhiyao.bing.ext.toRestResponse
+import me.zhiyao.bing.repository.BingImageRepository
 import me.zhiyao.bing.response.BaseResponse
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -17,31 +20,31 @@ import java.time.format.DateTimeParseException
  */
 @RestController
 @RequestMapping("/v1")
-class BingController(private val bingImageService: BingImageService) {
+class BingController(private val bingImageRepository: BingImageRepository) {
 
     @GetMapping("/random")
-    suspend fun random(): BaseResponse {
-        return BaseResponse.Success(bingImageService.random())
+    suspend fun random(): ResponseEntity<BaseResponse> {
+        return BaseResponse.Success(bingImageRepository.getRandom()).toRestResponse(HttpStatus.OK)
     }
 
     @GetMapping("/getByDate")
-    suspend fun getByDate(date: String?): BaseResponse {
+    suspend fun getByDate(date: String?): ResponseEntity<BaseResponse> {
         if (date.isNullOrBlank()) {
-            return BaseResponse.Error(Constants.CODE_DATE_IS_NULL_OR_BLANK)
+            return BaseResponse.Error(ResponseCode.DATE_IS_NULL_OR_BLANK).toRestResponse(HttpStatus.BAD_REQUEST)
         }
 
         val localDate = try {
             LocalDate.parse(date, DateTimeFormatter.BASIC_ISO_DATE)
         } catch (ex: DateTimeParseException) {
-            return BaseResponse.Error(Constants.CODE_DATE_FORMAT_INVALID)
+            return BaseResponse.Error(ResponseCode.DATE_FORMAT_INVALID).toRestResponse(HttpStatus.BAD_REQUEST)
         }
 
-        val bingImage = bingImageService.getByDate(localDate.year, localDate.monthValue, localDate.dayOfMonth)
+        val bingImage = bingImageRepository.getByDate(localDate.year, localDate.monthValue, localDate.dayOfMonth)
 
         return if (bingImage != null) {
-            BaseResponse.Success(bingImage)
+            BaseResponse.Success(bingImage).toRestResponse(HttpStatus.OK)
         } else {
-            BaseResponse.Error(Constants.CODE_DATE_OUT_OF_RANGE)
+            BaseResponse.Error(ResponseCode.DATE_OUT_OF_RANGE).toRestResponse(HttpStatus.NOT_FOUND)
         }
     }
 }

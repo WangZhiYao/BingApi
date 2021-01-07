@@ -1,12 +1,12 @@
 package me.zhiyao.bing.crawler
 
-import com.squareup.moshi.Moshi
+import com.fasterxml.jackson.databind.ObjectMapper
 import me.zhiyao.bing.crawler.model.HPImageArchive
 import me.zhiyao.bing.crawler.model.Image
 import me.zhiyao.bing.dao.model.BingImage
-import me.zhiyao.bing.dao.service.BingImageService
 import me.zhiyao.bing.ext.await
 import me.zhiyao.bing.ext.logger
+import me.zhiyao.bing.repository.BingImageRepository
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -24,8 +24,8 @@ import java.time.format.DateTimeFormatter
 @Service
 class BingCrawler(
     private val okHttpClient: OkHttpClient,
-    private val moshi: Moshi,
-    private val bingImageService: BingImageService
+    private val objectMapper: ObjectMapper,
+    private val bingImageRepository: BingImageRepository
 ) {
 
     private val logger = logger()
@@ -38,26 +38,26 @@ class BingCrawler(
             .build()
     }
 
-    suspend fun getHPImageArchive() {
+    suspend fun getHPImageArchive(): Boolean {
         val response = try {
             okHttpClient.newCall(bingDailyImageRequest).await()
         } catch (ex: IOException) {
             logger.error("get bing image failed", ex)
-            return
+            return false
         }
 
         if (!response.isSuccessful) {
             logger.error("get bing image failed: HTTP ${response.code()} ${response.message()}")
-            return
+            return false
         }
 
-        val hpImageArchive = convertResponse(response) ?: return
-        val image = validateImage(hpImageArchive.images) ?: return
+        val hpImageArchive = convertResponse(response) ?: return false
+        val image = validateImage(hpImageArchive.images) ?: return false
 
         val date = LocalDate.parse(image.endDate, DateTimeFormatter.BASIC_ISO_DATE)
         val imageName = image.url!!.split("&")[0].replace("/th?id=OHR.", "")
 
-        bingImageService.save(
+        return bingImageRepository.putBingImage(
             BingImage(
                 null,
                 date.year,
@@ -85,10 +85,8 @@ class BingCrawler(
             return null
         }
 
-        val hpImageArchiveAdapter = moshi.adapter(HPImageArchive::class.java)
-
         val hpImageArchive = try {
-            hpImageArchiveAdapter.fromJson(responseStr)
+            objectMapper.readValue(responseStr, HPImageArchive::class.java)
         } catch (ex: IOException) {
             logger.error("get bing image failed, parse response to json error", ex)
             return null
