@@ -3,6 +3,7 @@ package me.zhiyao.bing.configuration
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.JavaMailSenderImpl
@@ -21,6 +22,7 @@ class MailConfiguration(
 ) {
 
     @Bean
+    @Primary
     fun mailSender(): JavaMailSender {
         val mailSender = JavaMailSenderImpl()
         mailSender.host = mailProperties.host
