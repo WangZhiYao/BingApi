@@ -2,7 +2,6 @@ package me.zhiyao.bing.scheduler
 
 import kotlinx.coroutines.runBlocking
 import me.zhiyao.bing.crawler.BingCrawler
-import me.zhiyao.bing.repository.BingImageRepository
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.scheduling.annotation.Scheduled
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component
 @Component
 class CrawlerScheduler(
     private val bingCrawler: BingCrawler,
-    private val bingImageRepository: BingImageRepository,
     private val mailSender: JavaMailSender,
     private val message: SimpleMailMessage
 ) {
@@ -26,8 +24,6 @@ class CrawlerScheduler(
         runBlocking {
             if (!bingCrawler.getHPImageArchive()) {
                 mailSender.send(message)
-            } else {
-                bingImageRepository.flushCache()
             }
         }
     }

@@ -24,7 +24,12 @@ class BingController(private val bingImageRepository: BingImageRepository) {
 
     @GetMapping("/random")
     suspend fun random(): ResponseEntity<BaseResponse> {
-        return BaseResponse.Success(bingImageRepository.getRandom()).toRestResponse(HttpStatus.OK)
+        val bingImage = bingImageRepository.getRandom()
+        return if (bingImage != null) {
+            BaseResponse.Success(bingImage).toRestResponse(HttpStatus.OK)
+        } else {
+            BaseResponse.Error(ResponseCode.DATA_EMPTY).toRestResponse(HttpStatus.INTERNAL_SERVER_ERROR)
+        }
     }
 
     @GetMapping("/getByDate")

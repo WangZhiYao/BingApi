@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.stream.Collectors
+import javax.annotation.PostConstruct
 
 /**
  *
@@ -24,7 +25,33 @@ class BingImageRepository(
 
     private val logger = logger()
 
-    fun putBingImage(bingImage: BingImage): Boolean = bingImageService.save(bingImage)
+    @PostConstruct
+    fun init() {
+        initCache()
+    }
+
+    fun initCache() {
+        bingImageRedisTemplate.connectionFactory?.connection?.flushDb()
+
+        val bingImageList = bingImageService.list()
+        val bingImageMap = bingImageList.stream()
+            .collect(Collectors.toMap({ bingImage ->
+                val localDate = LocalDate.of(bingImage.year, bingImage.month, bingImage.day)
+                "${RedisKeyPrefix.BING_IMAGE}_${localDate.format(DateTimeFormatter.BASIC_ISO_DATE)}"
+            }) { bingImage -> bingImage })
+
+        bingImageRedisTemplate.opsForValue().multiSet(bingImageMap)
+    }
+
+    fun putBingImage(bingImage: BingImage): Boolean {
+        val success = bingImageService.save(bingImage)
+
+        val localDate = LocalDate.of(bingImage.year, bingImage.month, bingImage.day)
+        val cacheKey = "${RedisKeyPrefix.BING_IMAGE}_${localDate.format(DateTimeFormatter.BASIC_ISO_DATE)}"
+        bingImageRedisTemplate.opsForValue().set(cacheKey, bingImage)
+
+        return success
+    }
 
     fun getRandom(): BingImage? {
         val key = try {
@@ -39,29 +66,11 @@ class BingImageRepository(
 
     fun getByDate(year: Int, month: Int, day: Int): BingImage? {
         val localDate = LocalDate.of(year, month, day)
-        var bingImage = bingImageRedisTemplate.opsForValue()
-            .get("${RedisKeyPrefix.BING_IMAGE}_${localDate.format(DateTimeFormatter.BASIC_ISO_DATE)}")
-        if (bingImage == null) {
-            bingImage = bingImageService.getByDate(year, month, day)
+        val cacheKey = "${RedisKeyPrefix.BING_IMAGE}_${localDate.format(DateTimeFormatter.BASIC_ISO_DATE)}"
+        return if (bingImageRedisTemplate.hasKey(cacheKey)) {
+            bingImageRedisTemplate.opsForValue().get(cacheKey)
+        } else {
+            bingImageService.getByDate(year, month, day)
         }
-        return bingImage
-    }
-
-    fun flushCache() {
-        val bingImageList = bingImageService.list()
-        if (bingImageList.isNullOrEmpty()) {
-            logger.error("data source is empty")
-            return
-        }
-
-        val bingImageMap = bingImageList.stream()
-            .collect(Collectors.toMap({ bingImage ->
-                val localDate = LocalDate.of(bingImage.year, bingImage.month, bingImage.day)
-                "${RedisKeyPrefix.BING_IMAGE}_${localDate.format(DateTimeFormatter.BASIC_ISO_DATE)}"
-            }) { bingImage -> bingImage })
-
-        bingImageRedisTemplate.connectionFactory?.connection?.flushDb()
-
-        bingImageRedisTemplate.opsForValue().multiSet(bingImageMap)
     }
 }
