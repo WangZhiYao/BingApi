@@ -1,6 +1,7 @@
 # Bing
 
-A restful bing api   
+A restful bing api, but this api **IS NOT AVAILABLE CURRENTLY** because of there is no image host :disappointed_relieved: (will be fixed as soon as possible)  
+**Only Chinese is supported currently**. I will be very glad for if you can provide data in other languages.
 
 1. Get a random image:
 ```url
