@@ -1,6 +1,6 @@
 # Bing
 
-A restful bing api, but data **IS NOT AVAILABLE CURRENTLY** because of there is no image host :disappointed_relieved: (will be fixed as soon as possible)  
+A restful bing api, but response data **IS NOT AVAILABLE CURRENTLY** because of there is no image host :disappointed_relieved: (will be fixed as soon as possible)  
 **Only Chinese is supported currently**. I will be very glad for if you can provide data in other languages.
 
 ## How to use
