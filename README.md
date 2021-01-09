@@ -15,6 +15,7 @@ GET https://api.339.im:1015/bing/v1/getByDate?date={yyyyMMdd}
 ```
 
 ## Sample Response
+There is no description & location anymore after 2019.02.28
 ```json
 {
   "data": {
