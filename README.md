@@ -2,7 +2,7 @@
 
 A restful bing api
 
-**Only Chinese is supported currently**. I will be very glad if you can provide data in other languages.
+**Currently only supported in Chinese**. I will be very glad if you can provide the data in other languages.
 
 Get new data at 00:00:05 every day
 
