@@ -1,12 +1,12 @@
 # Bing
 
-A restful bing api, but response data **IS NOT AVAILABLE CURRENTLY** because of there is no image host :disappointed_relieved: (will be fixed as soon as possible)  
+A restful bing api
 
-**Only Chinese is supported currently**. I will be very glad for if you can provide data in other languages.
+**Only Chinese is supported currently**. I will be very glad if you can provide data in other languages.
 
 Get new data at 00:00:05 every day
 
-## How to use
+## 1.How to use
 1. Get a random image:
 ```url
 GET https://api.339.im:1015/bing/v1/random
@@ -17,7 +17,7 @@ GET https://api.339.im:1015/bing/v1/random
 GET https://api.339.im:1015/bing/v1/getByDate?date={yyyyMMdd}
 ```
 
-## Sample Response
+## 2.Sample Response
 There is no description & location anymore after 2019.02.28
 ```json
 {

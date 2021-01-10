@@ -1,6 +1,7 @@
 package me.zhiyao.bing.repository
 
-import me.zhiyao.bing.constant.RedisKeyPrefix
+import me.zhiyao.bing.constant.ImageHost
+import me.zhiyao.bing.constant.RedisKey
 import me.zhiyao.bing.dao.model.BingImage
 import me.zhiyao.bing.dao.service.BingImageService
 import me.zhiyao.bing.ext.logger
@@ -37,8 +38,11 @@ class BingImageRepository(
         val bingImageMap = bingImageList.stream()
             .collect(Collectors.toMap({ bingImage ->
                 val localDate = LocalDate.of(bingImage.year, bingImage.month, bingImage.day)
-                "${RedisKeyPrefix.BING_IMAGE}_${localDate.format(DateTimeFormatter.BASIC_ISO_DATE)}"
-            }) { bingImage -> bingImage })
+                "${RedisKey.PREFIX_BING_IMAGE}_${localDate.format(DateTimeFormatter.BASIC_ISO_DATE)}"
+            }) { bingImage ->
+                bingImage.image = ImageHost.BASE_URL + bingImage.image
+                bingImage
+            })
 
         bingImageRedisTemplate.opsForValue().multiSet(bingImageMap)
     }
@@ -47,7 +51,8 @@ class BingImageRepository(
         val success = bingImageService.save(bingImage)
 
         val localDate = LocalDate.of(bingImage.year, bingImage.month, bingImage.day)
-        val cacheKey = "${RedisKeyPrefix.BING_IMAGE}_${localDate.format(DateTimeFormatter.BASIC_ISO_DATE)}"
+        val cacheKey = "${RedisKey.PREFIX_BING_IMAGE}_${localDate.format(DateTimeFormatter.BASIC_ISO_DATE)}"
+        bingImage.image = ImageHost.BASE_URL + bingImage.image
         bingImageRedisTemplate.opsForValue().set(cacheKey, bingImage)
 
         return success
@@ -66,7 +71,7 @@ class BingImageRepository(
 
     fun getByDate(year: Int, month: Int, day: Int): BingImage? {
         val localDate = LocalDate.of(year, month, day)
-        val cacheKey = "${RedisKeyPrefix.BING_IMAGE}_${localDate.format(DateTimeFormatter.BASIC_ISO_DATE)}"
+        val cacheKey = "${RedisKey.PREFIX_BING_IMAGE}_${localDate.format(DateTimeFormatter.BASIC_ISO_DATE)}"
         return if (bingImageRedisTemplate.hasKey(cacheKey)) {
             bingImageRedisTemplate.opsForValue().get(cacheKey)
         } else {

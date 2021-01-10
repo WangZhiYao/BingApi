@@ -1,6 +1,5 @@
 package me.zhiyao.bing.dao.model
 
-import com.baomidou.mybatisplus.annotation.IdType
 import com.baomidou.mybatisplus.annotation.TableId
 import com.fasterxml.jackson.annotation.JsonIgnore
 
@@ -20,5 +19,5 @@ data class BingImage(
     val title: String?,
     val description: String?,
     val location: String?,
-    val image: String
+    var image: String
 )

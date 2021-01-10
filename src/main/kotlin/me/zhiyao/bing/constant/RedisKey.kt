@@ -5,7 +5,7 @@ package me.zhiyao.bing.constant
  * @author WangZhiYao
  * @date 2021/1/7
  */
-object RedisKeyPrefix {
+object RedisKey {
 
-    const val BING_IMAGE = "BING_IMAGE"
+    const val PREFIX_BING_IMAGE = "BING_IMAGE"
 }
