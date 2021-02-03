@@ -7,5 +7,5 @@ package me.zhiyao.bing.constant
  */
 object ImageHost {
 
-    const val BASE_URL = "https://img.339.im/"
+    const val BASE_URL = "https://img.339.im/bing/"
 }
