@@ -1,23 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.4.1"
-    id("io.spring.dependency-management") version "1.0.10.RELEASE"
+    id("org.springframework.boot") version "2.4.3"
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
     war
-    kotlin("jvm") version "1.4.21"
-    kotlin("kapt") version "1.4.21"
-    kotlin("plugin.spring") version "1.4.21"
+    kotlin("jvm") version "1.4.30"
+    kotlin("kapt") version "1.4.30"
+    kotlin("plugin.spring") version "1.4.30"
 }
 
 group = "me.zhiyao"
 version = "0.0.1"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
-
-configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
-    }
-}
 
 repositories {
     mavenCentral()
@@ -30,9 +24,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    kapt("org.springframework.boot:spring-boot-configuration-processor")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     implementation(kotlin("reflect"))
     implementation(kotlin("stdlib-jdk8"))
@@ -41,7 +35,7 @@ dependencies {
 
     runtimeOnly("mysql:mysql-connector-java")
     // MyBatisPlus
-    implementation("com.baomidou:mybatis-plus-boot-starter:3.4.1")
+    implementation("com.baomidou:mybatis-plus-boot-starter:3.4.2")
 
     // OkHttp
     implementation("com.squareup.okhttp3:okhttp")
