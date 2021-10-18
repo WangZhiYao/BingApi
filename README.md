@@ -4,7 +4,7 @@ A restful bing api
 
 **Currently only supported in Chinese**. I will be very glad if you can provide the data in other languages.
 
-Get new data at 00:00:05 every day
+Get new data at 00:00:05 (UTC+8) every day
 
 ## 1.How to use
 1. Get a random image:
