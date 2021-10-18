@@ -1,12 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.4.3"
+    id("org.springframework.boot") version "2.5.5"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     war
-    kotlin("jvm") version "1.4.30"
-    kotlin("kapt") version "1.4.30"
-    kotlin("plugin.spring") version "1.4.30"
+    kotlin("jvm") version "1.5.31"
+    kotlin("kapt") version "1.5.31"
+    kotlin("plugin.spring") version "1.5.31"
 }
 
 group = "me.zhiyao"
@@ -35,7 +35,7 @@ dependencies {
 
     runtimeOnly("mysql:mysql-connector-java")
     // MyBatisPlus
-    implementation("com.baomidou:mybatis-plus-boot-starter:3.4.2")
+    implementation("com.baomidou:mybatis-plus-boot-starter:3.4.3.4")
 
     // OkHttp
     implementation("com.squareup.okhttp3:okhttp")

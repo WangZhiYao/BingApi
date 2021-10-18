@@ -34,7 +34,7 @@ class BingCrawler(
         private const val BASE_URL_BING = "https://cn.bing.com"
         private val bingDailyImageRequest = Request.Builder()
             .get()
-            .url("$BASE_URL_BING/HPImageArchive.aspx?format=js&idx=0&n=1")
+            .url("$BASE_URL_BING/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN")
             .build()
     }
 

@@ -38,7 +38,7 @@ class BingImageRepository(
         val bingImageMap = bingImageList.stream()
             .collect(Collectors.toMap({ bingImage ->
                 val localDate = LocalDate.of(bingImage.year, bingImage.month, bingImage.day)
-                "${RedisKey.PREFIX_BING_IMAGE}_${localDate.format(DateTimeFormatter.BASIC_ISO_DATE)}"
+                "${RedisKey.PREFIX_BING_IMAGE}_${localDate.format(DateTimeFormatter.BASIC_ISO_DATE)}_${bingImage.image}"
             }) { bingImage ->
                 bingImage.image = ImageHost.BASE_URL + bingImage.image
                 bingImage
@@ -51,7 +51,8 @@ class BingImageRepository(
         val success = bingImageService.save(bingImage)
 
         val localDate = LocalDate.of(bingImage.year, bingImage.month, bingImage.day)
-        val cacheKey = "${RedisKey.PREFIX_BING_IMAGE}_${localDate.format(DateTimeFormatter.BASIC_ISO_DATE)}"
+        val cacheKey =
+            "${RedisKey.PREFIX_BING_IMAGE}_${localDate.format(DateTimeFormatter.BASIC_ISO_DATE)}_${bingImage.image}"
         bingImage.image = ImageHost.BASE_URL + bingImage.image
         bingImageRedisTemplate.opsForValue().set(cacheKey, bingImage)
 
@@ -72,8 +73,9 @@ class BingImageRepository(
     fun getByDate(year: Int, month: Int, day: Int): BingImage? {
         val localDate = LocalDate.of(year, month, day)
         val cacheKey = "${RedisKey.PREFIX_BING_IMAGE}_${localDate.format(DateTimeFormatter.BASIC_ISO_DATE)}"
-        return if (bingImageRedisTemplate.hasKey(cacheKey)) {
-            bingImageRedisTemplate.opsForValue().get(cacheKey)
+        val keys = bingImageRedisTemplate.keys(cacheKey)
+        return if (keys.isNotEmpty()) {
+            bingImageRedisTemplate.opsForValue().get(keys.first())
         } else {
             bingImageService.getByDate(year, month, day)
         }
